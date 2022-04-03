@@ -11,6 +11,7 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Crud Productos</title>
   </head>
   <body>
@@ -59,7 +60,6 @@
                 type="text"
                 class="form-control"
                 placeholder="Ingresar un codigo"
-                
               />
 
               <!-- onblur="validarCampoRequerido(this)"              -->
@@ -112,23 +112,20 @@
         <hr />
         <button class="btn btn-primary" id="btnAgregar">Agregar</button>
         <div class="table-responsive">
-        <table class="table my-5">
-          
-          <thead>
-            <tr>
-              <th scope="col">Cod.</th>
-              <th scope="col">Producto</th>
-              <th scope="col">Descripcion</th>
-              <th scope="col">Cantidad</th>
-              <th scope="col">URL</th>
-              <th scope="col">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tablaProductos">
-            
-          </tbody>
-        </table>
-      </div>
+          <table class="table my-5">
+            <thead>
+              <tr>
+                <th scope="col">Cod.</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Descripcion</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">URL</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaProductos"></tbody>
+          </table>
+        </div>
       </section>
     </main>
     <footer></footer>
@@ -137,6 +134,6 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
-    <script type='module' src="admin.js"></script>
+    <script type="module" src="admin.js"></script>
   </body>
 </html>

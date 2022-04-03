@@ -37,7 +37,7 @@ url.addEventListener("blur", () => {
 });
 formulario.addEventListener("submit", guardarProducto);
 
-btnAgregar.addEventListener('click', limpiarFormulario)
+btnAgregar.addEventListener("click", limpiarFormulario);
 //verificar si hay datos en localStorage
 cargaInicial();
 
@@ -79,6 +79,12 @@ function agregarProducto() {
   limpiarFormulario();
   // dibujar fila en la tabla
   crearFila(productoNuevo);
+  //mostrar un mensaje al usuario
+  Swal.fire(
+    "Producto agregado",
+    "El producto fue correctamente agregado",
+    "success"
+  );
 }
 
 function cargaInicial() {
@@ -105,7 +111,7 @@ function crearFila(itemProducto) {
   <td>${itemProducto.url}</td>
   <td>
     <button class="btn btn-warning" onclick="prepararEdicionProducto('${itemProducto.codigo}')">Editar</button>
-    <button class="btn btn-danger">Borrar</button>
+    <button class="btn btn-danger" onclick="eliminarProducto(${itemProducto.codigo})">Borrar</button>
   </td>
 </tr>`;
 }
@@ -115,7 +121,7 @@ function limpiarFormulario() {
   formulario.reset();
   //limpiar las clases de cada elemento del form
   codigo.className = "form-control";
-productoExistente = false;
+  productoExistente = false;
 }
 
 //funcion invocada desde el html
@@ -138,37 +144,100 @@ window.prepararEdicionProducto = (codigo) => {
 };
 
 function actualizarProducto() {
-  console.log("aqui tengo que modificar producto");
-  console.log(codigo.value);
+  // console.log("aqui tengo que modificar producto");
+  // console.log(codigo.value);
+
+  Swal.fire({
+    title: "¿Esta seguro que desea editar el producto?",
+    text: "No puede revertir posteriormente este proceso",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "si",
+    cancelButtonText: "cancelar",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      //aqui es donde procedemos a editar
+      let indiceProducto = listaProductos.findIndex((itemProducto) => {
+        return itemProducto.codigo == codigo.value;
+      });
+
+      //actualizar los valores del objeto encontrado dentro de mi arreglo
+      listaProductos[indiceProducto].nombreProducto =
+        document.querySelector("#producto").value;
+      listaProductos[indiceProducto].descripcion =
+        document.querySelector("#descripcion").value;
+      listaProductos[indiceProducto].cantidad =
+        document.querySelector("#cantidad").value;
+      listaProductos[indiceProducto].url = document.querySelector("#url").value;
+
+      console.log(listaProductos[indiceProducto]);
+
+      //actualizar el localStorage
+      localStorage.setItem("listaProductosKey", JSON.stringify(listaProductos));
+
+      //actualizar la tabla
+      borrarFilas();
+      listaProductos.forEach((itemProducto) => {
+        crearFila(itemProducto);
+      });
+      //limpiar el formulario
+      limpiarFormulario();
+
+      //mostrar un mensaje que el producto fue editado
+      Swal.fire(
+        "Producto editado",
+        "Su producto fue correctamente editado",
+        "success"
+      );
+    }
+  });
 
   //buscar la posicion del objeto con el codigo indicado
-  let indiceProducto = listaProductos.findIndex((itemProducto) => {
-    return itemProducto.codigo == codigo.value;
-  });
-
-  //actualizar los valores del objeto encontrado dentro de mi arreglo
-  listaProductos[indiceProducto].nombreProducto =
-    document.querySelector("#producto").value;
-  listaProductos[indiceProducto].descripcion =
-    document.querySelector("#descripcion").value;
-  listaProductos[indiceProducto].cantidad =
-    document.querySelector("#cantidad").value;
-  listaProductos[indiceProducto].url = document.querySelector("#url").value;
-
-  console.log(listaProductos[indiceProducto]);
-
-  //actualizar el localStorage
-  localStorage.setItem("listaProductosKey", JSON.stringify(listaProductos));
-
-  //actualizar la tabla
-  borrarFilas();
-  listaProductos.forEach((itemProducto) => {
-    crearFila(itemProducto);
-  });
 }
 
 function borrarFilas() {
   //traigo el nodo padre
   let tabla = document.querySelector("#tablaProductos");
   tabla.innerHTML = "";
+}
+
+window.eliminarProducto = (codigo)=> {
+  console.log(codigo);
+  Swal.fire({
+    title: '¿Está seguro de borrar el producto?',
+    text: "No se puede revertir este proceso posteriormente",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'si, borrar',
+    confirmButtonText: 'cancelar',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      //aqui el codigo si quiero borrar
+      //op1 splice(indice,1), para obtener el indice puedo usar finindex
+      //op2
+let _listaProductos = listaProductos.filter((itemProducto)=>{return itemProducto.codigo ==codigo})
+console.log(_listaProductos);  
+//actualizar el arreglo y el localStorage
+listaProductos = _listaProductos;
+localStorage.setItem('listaProductosKey', JSON.stringify(listaProductos));
+//borramos la tabla
+borrarFilas();
+//vuelvo a dibujar la tabla
+listaProductos.forEach((itemProducto)=>{
+  crearFila(itemProducto);
+});
+//muestro el mensaje
+
+
+      Swal.fire(
+        'Producto eliminado',
+        'El producto fue correctamente eliminado',
+        'success'
+      )
+    }
+  })
 }
